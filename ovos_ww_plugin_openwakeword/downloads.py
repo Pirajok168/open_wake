@@ -13,7 +13,7 @@ download_models()
 CUSTOM_MODEL = {
     "hey_lada": {
         "model_path": os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources/models/hey_lada.tflite"),
-        "download_url": "https://github.com/Pirajok168/open_wake/blob/dev/ovos_ww_plugin_openwakeword/hey_lada.tflite"
+        "download_url": "https://github.com/Pirajok168/open_wake/releases/download/v2.1.0/hey_lada.tflite"
     },
     "hey_jarvis": {
         "model_path": os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources/models/hey_jarvis_v0.1.tflite"),
