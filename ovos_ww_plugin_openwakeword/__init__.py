@@ -29,7 +29,7 @@ class OwwHotwordPlugin(HotWordEngine):
         # Support for 0.6.0, which removes packaged defaults
 
         test = self.config.get('models', [])
-        raise ValueError(f"================================================test=test= {test}")
+        LOG.info(test)
         self.model = openwakeword.Model(
             wakeword_models=test,
             custom_verifier_models=self.config.get('custom_verifier_models', {}),
