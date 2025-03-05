@@ -24,7 +24,7 @@ class OwwHotwordPlugin(HotWordEngine):
     a wide range of voices and acoustic environments.
     """
 
-    def __init__(self, key_phrase="hey_lada", config=None, lang="en-us"):
+    def __init__(self, key_phrase="hey jarvis", config=None, lang="en-us"):
         super().__init__(key_phrase, config, lang)
         # Support for 0.6.0, which removes packaged defaults
 
