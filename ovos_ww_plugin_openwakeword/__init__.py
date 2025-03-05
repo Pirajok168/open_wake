@@ -28,9 +28,10 @@ class OwwHotwordPlugin(HotWordEngine):
         super().__init__(key_phrase, config, lang)
         # Support for 0.6.0, which removes packaged defaults
 
-        raise ValueError(f"================================================ {self.config.get('models', [])}")
+        test = self.config.get('models', [])
+        raise ValueError(f"================================================test=test= {test}")
         self.model = openwakeword.Model(
-            wakeword_models=self.config.get('models', []),
+            wakeword_models=test,
             custom_verifier_models=self.config.get('custom_verifier_models', {}),
             custom_verifier_threshold=self.config.get('custom_verifier_threshold', 0.1),
             inference_framework=self.config.get('inference_framework', 'tflite')
