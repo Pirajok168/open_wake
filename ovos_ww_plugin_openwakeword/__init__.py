@@ -16,7 +16,11 @@ from ovos_plugin_manager.templates.hotwords import HotWordEngine
 from ovos_utils.log import LOG
 import openwakeword
 import numpy as np
-from openwakeword.utils import download_models
+from os.path import join, isfile, expanduser, dirname
+import requests
+from ovos_utils.xdg_utils import xdg_data_home
+from os import makedirs
+
 
 class OwwHotwordPlugin(HotWordEngine):
     """OpenWakeWord is an open-source wakeword or phrase engine that can be trained on 100% synthetic data.
@@ -28,10 +32,15 @@ class OwwHotwordPlugin(HotWordEngine):
         super().__init__(key_phrase, config, lang)
         # Support for 0.6.0, which removes packaged defaults
 
-        test = self.config.get('models', [])
-        LOG.info(test)
+        path = self.download_model(
+            "https://github.com/Pirajok168/open_wake/blob/dev/ovos_ww_plugin_openwakeword/hey_lada.onnx"
+        )
+
+        path2 = self.download_model(
+           "https://github.com/Pirajok168/open_wake/blob/dev/ovos_ww_plugin_openwakeword/hey_lada.tflite"
+        )
         self.model = openwakeword.Model(
-            wakeword_models=test,
+            wakeword_models=[path],
             custom_verifier_models=self.config.get('custom_verifier_models', {}),
             custom_verifier_threshold=self.config.get('custom_verifier_threshold', 0.1),
             inference_framework=self.config.get('inference_framework', 'tflite')
@@ -75,6 +84,21 @@ class OwwHotwordPlugin(HotWordEngine):
 
                     break
 
+    @staticmethod
+    def download_model(url):
+        name = url.split("/")[-1].split(".")[0] + ".tflite"
+        folder = join(xdg_data_home(), "precise-lite")
+        model_path = join(folder, name)
+        if not isfile(model_path):
+            LOG.info("Downloading model for precise-lite:")
+            LOG.info(url)
+            content = requests.get(url).content
+            makedirs(folder, exist_ok=True)
+            with open(model_path, "wb") as f:
+                f.write(content)
+            LOG.info(f"Model downloaded to {model_path}")
+
+        return model_path
 
     def found_wake_word(self, frame_data):
         if self.has_found:
