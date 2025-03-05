@@ -30,12 +30,11 @@ class OwwHotwordPlugin(HotWordEngine):
 
         # Load openWakeWord model
         pretrained_models = openwakeword.get_pretrained_model_paths() or []
-        path = 'hey_lada.tflite'
         self.model = openwakeword.Model(
-            wakeword_models=[path],
+            wakeword_models=['hey_lada.onnx'],
             custom_verifier_models=self.config.get('custom_verifier_models', {}),
             custom_verifier_threshold=self.config.get('custom_verifier_threshold', 0.1),
-            inference_framework=self.config.get('inference_framework', 'tflite')
+            inference_framework=self.config.get('inference_framework', 'onnx')
         )
         self.model_names = list(self.model.models.keys())
 
