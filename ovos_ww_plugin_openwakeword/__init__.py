@@ -16,10 +16,9 @@ from ovos_plugin_manager.templates.hotwords import HotWordEngine
 from ovos_utils.log import LOG
 import openwakeword
 import numpy as np
-from os.path import join, isfile, expanduser, dirname
-import requests
-from ovos_utils.xdg_utils import xdg_data_home
-from os import makedirs
+from openwakeword.utils import download_models
+
+from ovos_ww_plugin_openwakeword.downloads import downloadTest, get_pretrained_model_paths_test
 
 
 class OwwHotwordPlugin(HotWordEngine):
@@ -28,19 +27,14 @@ class OwwHotwordPlugin(HotWordEngine):
     a wide range of voices and acoustic environments.
     """
 
-    def __init__(self, key_phrase="hey jarvis", config=None, lang="en-us"):
+    def __init__(self, key_phrase="hey_lada", config=None, lang="en-us"):
         super().__init__(key_phrase, config, lang)
         # Support for 0.6.0, which removes packaged defaults
+        downloadTest()
 
-        path = self.download_model(
-            "https://github.com/Pirajok168/open_wake/blob/dev/ovos_ww_plugin_openwakeword/hey_lada.onnx"
-        )
-
-        path2 = self.download_model(
-           "https://github.com/Pirajok168/open_wake/blob/dev/ovos_ww_plugin_openwakeword/hey_lada.tflite"
-        )
+        pretrained_models = get_pretrained_model_paths_test() or []
         self.model = openwakeword.Model(
-            wakeword_models=[path],
+            wakeword_models=[i for i in pretrained_models if key_phrase in i],
             custom_verifier_models=self.config.get('custom_verifier_models', {}),
             custom_verifier_threshold=self.config.get('custom_verifier_threshold', 0.1),
             inference_framework=self.config.get('inference_framework', 'tflite')
@@ -84,21 +78,6 @@ class OwwHotwordPlugin(HotWordEngine):
 
                     break
 
-    @staticmethod
-    def download_model(url):
-        name = url.split("/")[-1].split(".")[0] + ".tflite"
-        folder = join(xdg_data_home(), "precise-lite")
-        model_path = join(folder, name)
-        if not isfile(model_path):
-            LOG.info("Downloading model for precise-lite:")
-            LOG.info(url)
-            content = requests.get(url).content
-            makedirs(folder, exist_ok=True)
-            with open(model_path, "wb") as f:
-                f.write(content)
-            LOG.info(f"Model downloaded to {model_path}")
-
-        return model_path
 
     def found_wake_word(self, frame_data):
         if self.has_found:
