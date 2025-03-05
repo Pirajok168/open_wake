@@ -24,17 +24,18 @@ class OwwHotwordPlugin(HotWordEngine):
     a wide range of voices and acoustic environments.
     """
 
-    def __init__(self, key_phrase="hey lada", config=None, lang="en-us"):
+    def __init__(self, key_phrase="hey_lada", config=None, lang="en-us"):
         super().__init__(key_phrase, config, lang)
         # Support for 0.6.0, which removes packaged defaults
 
-        # Load openWakeWord model
-        pretrained_models = openwakeword.get_pretrained_model_paths() or []
+
         self.model = openwakeword.Model(
-            wakeword_models=['hey_lada.onnx'],
-            custom_verifier_models=self.config.get('custom_verifier_models', {}),
-            custom_verifier_threshold=self.config.get('custom_verifier_threshold', 0.1),
-            inference_framework=self.config.get('inference_framework', 'onnx')
+            wakeword_models=[
+                'hey_lada.onnx'
+            ],
+            custom_verifier_models={},
+            custom_verifier_threshold=0.1,
+            inference_framework='onnx'
         )
         self.model_names = list(self.model.models.keys())
 
