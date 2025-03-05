@@ -28,7 +28,7 @@ class OwwHotwordPlugin(HotWordEngine):
         super().__init__(key_phrase, config, lang)
         # Support for 0.6.0, which removes packaged defaults
 
-        print(f"================================================ {self.config.get('models', [])}")
+        raise ValueError(f"================================================ {self.config.get('models', [])}")
         self.model = openwakeword.Model(
             wakeword_models=self.config.get('models', []),
             custom_verifier_models=self.config.get('custom_verifier_models', {}),
